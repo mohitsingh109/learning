@@ -1,0 +1,21 @@
+{
+  "name" : "Mohit Singh",
+  "age": 29,
+  "rating": 9.7,
+  "reviews": ["Good", "5 Star", "bla..."],
+  "address": {
+    "pin_code": 134113,
+    "city": "Pkl",
+    "state": "Haryana"
+  },
+  "notes" : [
+    {
+      "id": "1",
+      "name": "note1"
+    },
+    {
+      "id": "2",
+      "name": "note2"
+    }
+  ]
+}
