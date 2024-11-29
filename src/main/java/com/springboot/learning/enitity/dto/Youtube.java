@@ -4,6 +4,7 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import lombok.ToString;
 
 import java.time.LocalDate;
 
@@ -11,17 +12,19 @@ import java.time.LocalDate;
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
+@ToString // print all the details of youtube object
 public class Youtube {
+
+    private Long id; // PK
 
     private String channelId;
 
-    private String name;
+    private String name; // update
 
     public LocalDate uploadDate;
 
     public Integer duration;
 
-    public String description;
+    public String description; // update
 
-    //...
 }

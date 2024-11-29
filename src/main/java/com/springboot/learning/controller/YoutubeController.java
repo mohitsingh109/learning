@@ -4,16 +4,21 @@ import com.springboot.learning.enitity.dto.Youtube;
 import com.springboot.learning.enitity.dto.YoutubeSearch;
 import com.springboot.learning.service.YoutubeService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import java.util.List;
+import java.net.URI;
 
 @RestController
+@RequestMapping("/youtube") // It will add to all the request
 public class YoutubeController {
 
     private final YoutubeService youtubeService;
@@ -24,32 +29,38 @@ public class YoutubeController {
     }
 
     //Get a Movie
-    @GetMapping("/youtube/search")
-    public YoutubeSearch getMovies() {
-        System.out.println("Thread Name: " + Thread.currentThread().getName());
-        return youtubeService.getMovies();
+    @GetMapping("/search")
+    public ResponseEntity<YoutubeSearch> getMovies() {
+        // new ResponseEntity(youtubeService.getMovies(), HttpStats.OK)
+        return ResponseEntity.ok(youtubeService.getMovies());
     }
 
     //Post a Movie
-    @PostMapping("/youtube/{movie}")
-    public void createMovie(@PathVariable("movie") String movie) {
-        youtubeService.createMovie(movie);
+
+    /**
+     * {
+     *     "channelId": "2",
+     *     "name": "Spring boot",
+     *     "uploadDate": "2024-01-01",
+     *     "duration": 5000,
+     *     "description": "THis is Spring boot tutorial"
+     * }
+     */
+    @PostMapping
+    public ResponseEntity<String> createMovie(@RequestBody Youtube youtube) {
+        youtubeService.createMovie(youtube);
+        return ResponseEntity.created(URI.create("ok")).build();
     }
 
     //Update a Movie
-    @PutMapping("/youtube/{oldMovie}/{newMovie}")
-    public void updateMovie(@PathVariable("oldMovie") String oldMovie, @PathVariable("newMovie") String newMovie) {
-       youtubeService.updateMovie(oldMovie, newMovie);
+    @PutMapping("/{id}")
+    public ResponseEntity<Youtube> updateMovie(@PathVariable("id") Long id, @RequestBody Youtube youtube) {
+       return ResponseEntity.ok(youtubeService.updateMovie(id, youtube));
     }
 
     //Delete a Movie
-    @DeleteMapping("/youtube/{movie}")
-    public void deleteMovie(@PathVariable("movie") String movie) {
-       youtubeService.deleteMovie(movie);
+    @DeleteMapping("/{id}")
+    public void deleteMovie(@PathVariable("id") Long id) {
+       youtubeService.deleteMovie(id);
     }
-
-//    @PatchMapping("/youtube/patch")
-//    public void performPatch() {
-//
-//    }
 }

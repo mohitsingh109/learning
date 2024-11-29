@@ -16,8 +16,4 @@ public class YoutubeSearch {
     private List<Youtube> youtubeVideos;
 
     private List<YoutubeChannel> youtubeChannels;
-
-    //....
-
-    //....
 }
