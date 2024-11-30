@@ -46,7 +46,7 @@ public class YoutubeController {
      *     "description": "THis is Spring boot tutorial"
      * }
      */
-    @PostMapping
+    @PostMapping()
     public ResponseEntity<String> createMovie(@RequestBody Youtube youtube) {
         youtubeService.createMovie(youtube);
         return ResponseEntity.created(URI.create("ok")).build();

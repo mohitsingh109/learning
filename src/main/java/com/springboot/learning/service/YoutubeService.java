@@ -1,50 +1,57 @@
 package com.springboot.learning.service;
 
+import com.springboot.learning.config.AppProperties;
 import com.springboot.learning.enitity.dto.Youtube;
-import com.springboot.learning.enitity.dto.YoutubeChannel;
 import com.springboot.learning.enitity.dto.YoutubeSearch;
+import com.springboot.learning.repository.YoutubeRepository;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
-import java.time.LocalDate;
-import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 
 @Service
 public class YoutubeService {
 
-    String userName = "sljfdskljfs"; // security??
+    private final YoutubeRepository youtubeRepository;
 
-    private List<String> movies = new ArrayList<>();
+    private final AppProperties appProperties;
 
-    private List<Youtube> youtubesVideos = new ArrayList<>();
+    @Value("${app.title:null}")
+    private String title; // null
 
-    private List<YoutubeChannel> youtubeChannels = new ArrayList<>();
+    @Value("${app.youtube.names}")
+    private List<String> ignoreYoutubeVideo;
 
-    public YoutubeService() {
-        youtubesVideos.add(new Youtube(1L, "1", "Avangers", LocalDate.now(), 1000, "description-1"));
-        youtubesVideos.add(new Youtube(2L,"2","Java", LocalDate.now(), 100, "description-2"));
-        youtubesVideos.add(new Youtube(3L,"2","Python", LocalDate.now(), 2000, "description-3"));
-        youtubeChannels.add(new YoutubeChannel("1", "ABC"));
-        youtubeChannels.add(new YoutubeChannel("2", "XYZ"));
+    @Value("#{${app.youtube.map}}") //SPel
+    private Map<String, String> map;
+
+    @Autowired
+    public YoutubeService(YoutubeRepository youtubeRepository, AppProperties appProperties) {
+        this.youtubeRepository = youtubeRepository;
+        this.appProperties = appProperties;
     }
 
     // Get
     public YoutubeSearch getMovies() {
-        return new YoutubeSearch(youtubesVideos, youtubeChannels); // data fetch operation
+        System.out.println(appProperties);
+        System.out.println("Title: " + title);
+        System.out.println("ignoreYoutubeVideo: " + ignoreYoutubeVideo);
+        System.out.println("map: " + map);
+        return youtubeRepository.findAll();
     }
 
     // create
     public void createMovie(Youtube youtube) {
-        youtubesVideos.add(youtube); // data insert operation
+        youtubeRepository.save(youtube);
     }
 
 
     public Youtube updateMovie(Long id, Youtube updateYoutube) {
         //find the data from DB
-        Optional<Youtube> optional = youtubesVideos.stream() // data-query
-                .filter(y -> y.getId().equals(id))
-                .findFirst();
+        Optional<Youtube> optional = youtubeRepository.findById(id);
 
         //validate if data exist
         if(optional.isEmpty()) {
@@ -70,13 +77,7 @@ public class YoutubeService {
 
     // delete
     public void deleteMovie(Long id) {
-        //find the video
-        Optional<Youtube> optional = youtubesVideos.stream()
-                .filter(y -> y.getId().equals(id))
-                .findFirst();
-
-        //delete the video
-        optional.ifPresent(y -> youtubesVideos.remove(y));
+        youtubeRepository.deleteById(id);
     }
 
 }
